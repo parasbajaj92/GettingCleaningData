@@ -9,14 +9,14 @@ dtTidy
 Variable       | Comments
 ---------------|-----------
 Subject        | subject identifier of volunteer (1-30)
-ActivityName   | name ofactivity subject performed (LAYING|SITTING|STANDING|WALKING|WALKING_DOWNSTAIRS|WALKING_UPSTAIRS)
-ftDomain       | Feature: Time or Frequency domain (Time|Freq)
-ftInstrment    | Feature: Instrument measured (Accelerometer|Gyroscope)
-ftAcceleration | Feature: Acceleration measured (Body|Gravity)
-ftStatVariable | Feature: Stat variable (mean|std)
+ActivityName   | name ofactivity subject performed (LAYING,SITTING,STANDING,WALKING,WALKING_DOWNSTAIRS,WALKING_UPSTAIRS)
+ftDomain       | Feature: Time or Frequency domain (Time,Freq)
+ftInstrment    | Feature: Instrument measured (Accelerometer,Gyroscope)
+ftAcceleration | Feature: Acceleration measured (Body,Gravity)
+ftStatVariable | Feature: Stat variable (mean,std)
 ftJerk         | Feature: Jerk indicator (Y)
 ftMagnitude    | Feature: Magnitude indicator (Y)
-ftAxis         | Feature: Axis measured (X|Y|Z)
+ftAxis         | Feature: Axis measured (X,Y,Z)
 ftAvg          | Feature: Average of measurements over subject and activity and above features (numeric)
 
 
