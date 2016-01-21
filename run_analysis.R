@@ -94,4 +94,4 @@ dtTidy$ftAxis[grepl('-Z', dtTidy$ftName)] <- 'Z'
 
 dtTidy$ftName <- NULL
 
-write.table(dtTidy, file.path(path, 'tidy.txt'))
+write.table(dtTidy, file.path(path, 'tidy.txt'), row.names=FALSE)
