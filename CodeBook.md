@@ -27,9 +27,9 @@ Transformations
 
 2. Dataset activity variable was merged with the activity lookup table to yield descriptive activity name.
 
-3. Datset was melted with subject and activity as id variables.
+3. Features were filtered to only those matching mean() or std(). Dataset was merged with derived feature code lookup table to get featureName.
 
-4. Features were filtered to only those matching mean() or std(). Dataset was merged with derived feature code lookup table to get featureName.
+4. Datset was melted with subject, activity, and feature as id variables.
 
 5. An average was added per group of subject, activity, and feature
 
