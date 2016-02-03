@@ -1,5 +1,5 @@
 library(data.table)
-library(reshape2)
+library(dplyr)
 
 path <- getwd()
 
@@ -52,46 +52,30 @@ dtFeats$ftCode <- paste('V', dtFeats$ftNum, sep = "")
 #select only the filtered features (with=FALSE to dynamically pick cols)
 dt <- dt[,c(key(dt), dtFeats$ftCode),with=F]
 
+#rename columns
+setnames(dt, old=dtFeats$ftCode, new=as.character(dtFeats$ftName))
+
 #read activity names
 dtActNames <- data.table(read.table(file.path(path, d, 'activity_labels.txt')))
 names(dtActNames) <- c('Activity','ActivityName')
 dt <- merge(dt,dtActNames,by='Activity')
 remove(dtActNames)
 #add activityname as a key
-setkey(dt,Subject,Activity,ActivityName)
-
-#reshape data
-dt <- melt(dt, key(dt), variable.name='ftCode',value.name='ftValue')
-dt$Activity <- NULL
 
 #merge in ftName
-dt <- merge(dt,dtFeats,by='ftCode')
-setkey(dt,Subject,ActivityName,ftName)
 
-dtTidy <- dt[,.(ftAvg=mean(ftValue)),by=key(dt)]
+dtTidy <- dt %>% group_by(Subject, ActivityName) %>% summarise_each(funs(mean))
+
+dtTidy$Activity <- NULL
 
 #start seperating out featName column to seperate columns
-#ftDomain: TIME FREQ
-dtTidy$ftDomain[grepl('^t',dtTidy$ftName)] <- 'Time'
-dtTidy$ftDomain[grepl('^f',dtTidy$ftName)] <- 'Freq'
-#ftInstrment:  Accelerometer Gyroscope
-dtTidy$ftInstrment[grepl('Acc',dtTidy$ftName)] <- 'Accelerometer'
-dtTidy$ftInstrment[grepl('Gyro',dtTidy$ftName)] <- 'Gyroscope'
-#ftAcceleration:  Body Gravity
-dtTidy$ftAcceleration[grepl('BodyAcc',dtTidy$ftName)] <- 'Body'
-dtTidy$ftAcceleration[grepl('GravityAcc',dtTidy$ftName)] <- 'Gravity'
-#ftStatVariable:  mean std
-dtTidy$ftStatVariable[grepl('mean()',dtTidy$ftName)] <- 'mean'
-dtTidy$ftStatVariable[grepl('std()',dtTidy$ftName)] <- 'std'
-#ftJerk: Y
-dtTidy$ftJerk[grepl('Jerk', dtTidy$ftName)] <- 'Y'
-#ftMagnitude: Y
-dtTidy$ftMagnitude[grepl('Mag', dtTidy$ftName)] <- 'Y'
-#ftAxis:  X Y Z
-dtTidy$ftAxis[grepl('-X', dtTidy$ftName)] <- 'X'
-dtTidy$ftAxis[grepl('-Y', dtTidy$ftName)] <- 'Y'
-dtTidy$ftAxis[grepl('-Z', dtTidy$ftName)] <- 'Z'
+names(dtTidy) <- gsub('^t', 'time', names(dtTidy))
+names(dtTidy) <- gsub('^f', 'frequency', names(dtTidy))
+names(dtTidy) <- gsub('Acc', 'Accelerometer', names(dtTidy))
+names(dtTidy) <- gsub('Gyro','Gyroscope', names(dtTidy))
+names(dtTidy) <- gsub('mean[(][)]','Mean',names(dtTidy))
+names(dtTidy) <- gsub('std[(][)]','Std',names(dtTidy))
+names(dtTidy) <- gsub('-','',names(dtTidy))
 
-dtTidy$ftName <- NULL
 
 write.table(dtTidy, file.path(path, 'tidy.txt'), row.names=FALSE)
