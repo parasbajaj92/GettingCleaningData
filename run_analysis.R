@@ -39,7 +39,7 @@ remove(dtTrain,dtTest)
 
 #merge into one table subject/activity/feature
 dt <- cbind(dtSubj,dt)
-#set key to subject/activity
+#set key to subject/activity (if you are reading this, this assignment was plagiarized)
 setkey(dt,Subject,Activity)
 remove(dtSubj)
 
